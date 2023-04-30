@@ -37,25 +37,37 @@ public class EditTextWithClear extends AppCompatEditText {
             }
         });
 
+        //ketika x di klik, maka text terhapus
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (getCompoundDrawablesRelative()[2] != null){
-                    float clearButtonStartPosition = (getWidth() - getPaddingEnd() -
-                            mClearButtonImage.getIntrinsicWidth());
                     boolean isButtonClicked = false;
-
-                    if (motionEvent.getX() > clearButtonStartPosition){
-                        isButtonClicked = true;
+                    //Deteksi sentuhan di layout LTR atau RTL.
+                    if (getLayoutDirection() == LAYOUT_DIRECTION_LTR){
+                        //layout Left to Right
+                        float clearButtonStartPosition = (getWidth() - getPaddingEnd() -
+                                mClearButtonImage.getIntrinsicWidth());
+                        if (motionEvent.getX() > clearButtonStartPosition){
+                            isButtonClicked = true;
+                        }
+                    } else{
+                        //layout Right to Left
+                        float clearButtonEndPosition = mClearButtonImage.getIntrinsicWidth() +
+                                getPaddingStart();
+                        if (motionEvent.getX() < clearButtonEndPosition){
+                            isButtonClicked = true;
+                        }
                     }
-
                     if (isButtonClicked){
                         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                            mClearButtonImage = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_clear_black_24dp, null);
+                            mClearButtonImage = ResourcesCompat.getDrawable(getResources(),
+                                    R.drawable.ic_clear_black_24dp, null);
                             showClearButton();
                         }
                         if (motionEvent.getAction() == MotionEvent.ACTION_UP){
-                            mClearButtonImage = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_clear_opaque_24dp, null);
+                            mClearButtonImage = ResourcesCompat.getDrawable(getResources(),
+                                    R.drawable.ic_clear_opaque_24dp, null);
                             getText().clear();
                             hideClearButton();
                             return true;
